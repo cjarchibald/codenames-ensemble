@@ -123,22 +123,11 @@ class ResultsAnalyzer:
                     #For each learning period and for each pairing, calculate stats
                     data = parsed_data[lp][cm][g]
 
-                    # if self.experiment_settings.experiment_type == None:
-                    #     entry = self.get_mean_w_moe(data[self.stats.GAME_WIN_LOSS])
-                    # else:
-                    #     entry = np.average(data[self.stats.GAME_WIN_LOSS])
-
                     #calculate lp win rate
                     processed_data[lp][cm][g][self.stats.WIN_RATE] = np.average(data[self.stats.GAME_WIN_LOSS])
 
                     #calculate lp avg win time
                     win_times = self.get_win_times(data[self.stats.GAME_WIN_LOSS], data[self.stats.NUM_ROUNDS_PER_GAME])
-
-
-                    # if self.experiment_settings.experiment_type == None:
-                    #     entry = self.get_mean_w_moe(win_times)
-                    # else:
-                    #     entry = np.average(win_times)
 
 
                     if len(win_times) != 0: processed_data[lp][cm][g][self.stats.AVG_WIN_TIME] = np.average(win_times)
@@ -210,7 +199,6 @@ class ResultsAnalyzer:
         event_arrays = self.get_event_arrays(data[self.stats.NUM_ROUNDS_PER_GAME], \
                         data[self.stats.RED_WORDS_FLIPPED_BY_ROUND], data[self.stats.BLUE_WORDS_FLIPPED_BY_ROUND], \
                         data[self.stats.BYSTANDER_WORDS_FLIPPED_BY_ROUND], data[self.stats.ASSASSIN_WORDS_FLIPPED_BY_ROUND])
-        #TODO: Finish calculating this
 
         #Generate all of the events that are possible
         pos_events = self.generate_pos_events()
@@ -315,7 +303,6 @@ class ResultsAnalyzer:
 
         #Check if this is a learning experiment
         if self.experiment_settings.experiment_type == self.experiment_types.LEARNING_EXPERIMENT:
-            #TODO: loop through all of the lps here
             lp = -1
             performance_stats = self.create_learn_table(processed_data[self.stat_dict_keys.FINAL_KEY], self.file_paths_obj.learn_table_filepaths[lp])
             self.create_performance_progression_figures(processed_data[self.stat_dict_keys.FINAL_KEY], lp, performance_stats)
@@ -324,12 +311,6 @@ class ResultsAnalyzer:
             self.create_arm_weights_figures(processed_data[self.stat_dict_keys.FINAL_KEY], lp)
         elif self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
             self.create_param_vs_score_figures(processed_data)
-
-    def compile_data(self):
-        #This is where we compile all of the figures and tables into a file 
-
-        #Create one pdf page per pairing (one for W and WO as well). Get the table data as well and place it on page
-        pass
 
     def run_analysis(self):
         
@@ -350,7 +331,6 @@ class ResultsAnalyzer:
                 processed_data = self.load_processed_data()
 
             self.visualize_data(processed_data)
-            self.compile_data()
 
         elif self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
             
@@ -384,7 +364,6 @@ class ResultsAnalyzer:
             if not self.use_preloaded_visualized:
                 self.visualize_data(final_processed_data)
 
-            self.compile_data()
         else: #this is a tournament
             round_logs = self.file_paths_obj.round_log_filepaths
             parsed_data_filepaths = self.file_paths_obj.parsed_data_filepaths
@@ -461,8 +440,7 @@ class ResultsAnalyzer:
                     continue
                 fps = []
                 has_ens_cm = False
-                if self.bot_ai_types.get_bot_ai_type(cm) == self.ai_types.DISTANCE_ENSEMBLE or \
-                    self.bot_ai_types.get_bot_ai_type(cm) == self.ai_types.ASSOCIATOR_ENSEMBLE:
+                if self.bot_ai_types.get_bot_ai_type(cm) == self.ai_types.DISTANCE_ENSEMBLE:
                     fps.append(file_paths_dict['cm'][stat][lp])
                     has_ens_cm = True
 
@@ -470,8 +448,7 @@ class ResultsAnalyzer:
                     if self.is_rand_ens(g):
                         continue
                     has_ens_g = False
-                    if self.bot_ai_types.get_bot_ai_type(g) == self.ai_types.DISTANCE_ENSEMBLE or \
-                        self.bot_ai_types.get_bot_ai_type(g) == self.ai_types.ASSOCIATOR_ENSEMBLE:
+                    if self.bot_ai_types.get_bot_ai_type(g) == self.ai_types.DISTANCE_ENSEMBLE:
                         fps.append(file_paths_dict['g'][stat][lp])
                         has_ens_g = True 
                     
@@ -565,9 +542,6 @@ class ResultsAnalyzer:
             tm_weights = [4.0 if w == np.inf else w for w in tm_weights]
             plt.plot(x_axis, tm_weights, label=tm)
         plt.legend()
-        # plt.title(f"arm weights with \n{cm} and \n{g}")
-        # plt.ylabel('score')
-        # plt.xlabel('game')
         plt.savefig(save_path)
         plt.clf()
     
@@ -586,9 +560,6 @@ class ResultsAnalyzer:
                 new_x.append(e)
 
         ax.bar(new_x, y_axis)
-        # plt.title(title)
-        # plt.ylabel(y_label)
-        # plt.xlabel(x_label)
         plt.xticks(rotation = -45, fontsize = 10)
         plt.savefig(save_file)
         plt.clf() 
@@ -647,8 +618,6 @@ class ResultsAnalyzer:
                 percent_selected = processed_data[cm][ens_g][self.stat_dict_keys.G_LEARN_STATS][self.stats.PERCENTAGE_BOT_CHOSEN]
                 self.create_single_arm_percentage_figure(percent_selected, cm, ens_g, path)
 
-        pass
-    
     def create_learn_table(self, processed_data, fp):
 
 
@@ -661,13 +630,11 @@ class ResultsAnalyzer:
         has_ensemble_cm = False 
         has_ensemble_g = False
         for cm in processed_data:
-            if self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(cm) or \
-                self.ai_types.ASSOCIATOR_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(cm):
+            if self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(cm):
                 has_ensemble_cm = True 
         
         for g in processed_data[list(processed_data.keys())[0]]:
-            if self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(g) or \
-                self.ai_types.ASSOCIATOR_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(g):
+            if self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(g):
                 has_ensemble_g = True
         
         #Now I need to calculate average performances, best avg performance, best overall performance for each stat
@@ -692,15 +659,11 @@ class ResultsAnalyzer:
 
     
     def save_tables(self, tables, f):
-        #I can also save other files if I want 
-        # with open("tables.json", 'w+') as file:
-        #     json.dump(tables, file)
 
         #loop through the stat tables and save each one to the opened file
         for stat in tables:
             f.write(stat + '\n')
             f.write(tabulate(tables[stat], headers='firstrow', stralign='center', tablefmt='fancy_grid', floatfmt='.4f') + '\n\n')
-            # f.write(tabulate(tables[stat], headers='firstrow', stralign='center', tablefmt='latex', floatfmt='.4f') + '\n\n')
     
     def merge_with_performance_stats(self, table, performance_stats, solo_bot_data, stat, has_ensemble_cm, has_ensemble_g):
         #add the needed columns
@@ -787,16 +750,14 @@ class ResultsAnalyzer:
     def find_ensemble(self, d):
         ensemble = None
         for bot in d:
-            if (self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(bot) or \
-                self.ai_types.ASSOCIATOR_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(bot)):
+            if self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(bot):
                 ensemble = bot
                 break  
         return ensemble
 
 
     def is_rand_ens(self, bot):
-        if self.bot_ai_types.get_bot_ai_type(bot) == self.ai_types.RANDOM_DISTANCE_ENSEMBLE or \
-                        self.bot_ai_types.get_bot_ai_type(bot) == self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE:
+        if self.bot_ai_types.get_bot_ai_type(bot) == self.ai_types.RANDOM_DISTANCE_ENSEMBLE:
             return True 
         return False
     
@@ -962,7 +923,6 @@ class ResultsAnalyzer:
 
         return table
     
-    ###NOTE: Make sure that the processed data passed in doesn't have an lp layer in the dictionary
     def assemble_main_table(self, processed_data, stat):
         #loop throught the cms and then loop through the gs
         table = []
@@ -990,21 +950,12 @@ class ResultsAnalyzer:
         #meanwhile 
         return table
 
-    def create_main_table(self, processed_data, fp):
-        #This creates a cross table with the averages of the performances for cms and gs
-        tables = {}
-        for stat in self.main_stats_keys:
-            tables[stat] = self.assemble_main_table(processed_data, stat)
-        #Save stuff
-
     def merge_data(self, merged_dict, learning_dict, type):
         for cm in merged_dict:
             for g in merged_dict[cm]:
-                if type == types.CM and (self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(cm) or \
-                    self.ai_types.ASSOCIATOR_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(cm)):
+                if type == types.CM and (self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(cm)):
                     merged_dict[cm][g][self.stat_dict_keys.CM_LEARN_STATS] = learning_dict[g]
-                elif type == types.G and (self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(g) or \
-                    self.ai_types.ASSOCIATOR_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(g)):
+                elif type == types.G and (self.ai_types.DISTANCE_ENSEMBLE == self.bot_ai_types.get_bot_ai_type(g)):
                     merged_dict[cm][g][self.stat_dict_keys.G_LEARN_STATS] = learning_dict[cm]
 
     def compare_to_best(self, best, val, stat):
@@ -1249,27 +1200,6 @@ class ResultsAnalyzer:
                 events[e] += 1
             vec = self.get_feature_vec(events, pos_events)
             pair_scores.append(model.predict(np.array(vec).reshape(1, -1))[0])
-
-                  
-
-        #Now we iterate through all of the rounds and we create the turn outcome for 
-        #each round. We then add an occurance to the dictionary. At the game end point
-        #We put the score of that vector into the pair_scores array
-        # for i in range(len(num_rounds_per_game)):
-        # curr_ind = 0
-        # for i in range(len(num_rounds_per_game)):
-        #     for j in range(curr_ind, curr_ind + int(num_rounds_per_game[i])):
-        #         rwf = red_words_flipped_by_round[j]
-        #         bwf = blue_words_flipped_by_round[j]
-        #         bywf = bystander_words_flipped_by_round[j]
-        #         awf = assassin_words_flipped_by_round[j]
-        #         #find the corresponding event and increment the count
-        #         e = self.create_string([rwf, bwf, bywf, awf])
-        #         events[e] += 1
-        #     #Calculate the accumalative pair score at the end of that game
-        #     vec = self.get_feature_vec(events, pos_events)
-        #     pair_scores.append(model.predict(np.array(vec).reshape(1, -1))[0])
-        #     curr_ind += int(num_rounds_per_game[i])
 
         return pair_scores
     

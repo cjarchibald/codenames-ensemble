@@ -1,7 +1,5 @@
 '''
 This file will contain associations from the json file. You will pass in a filepath
-
-authors: Spencer Brosnahan and Kyle Rogers
 '''
 
 import json

@@ -15,7 +15,6 @@ class RoundLogParser:
 
     This function parses a single file and puts the data into a stat dict. Save that dict to a parsed data file
     If you want to exclude bots from the file, too bad because that functionality should be in the data processing phase
-    /Users/spencerbrosnahan/Documents/GitHub/codenames-ai/stats/saved_results/tournaments/raw_data/round_logs/round_log_distance_associator_solitair.txt
     '''
     def parse_file(self, file_path, counter):
         stat_dict = {}

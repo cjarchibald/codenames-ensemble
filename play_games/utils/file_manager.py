@@ -4,9 +4,6 @@ but all of the names are unique with each change in a hyperparameter.
 This allows us to keep experiments separate and identifiable. 
 This file is also in charge of deleting files that already exist when an experiment is run again. (we might re-run experiments for bug fixes and what not)
 It loads the needed filepaths into the file_paths_obj and opens the needed files  and holds/opens/closes the actual file objects
-
-author: Spencer Brosnahan
-
 '''
 
 from os.path import exists
@@ -53,8 +50,6 @@ class FileManager:
         #third task is to create the full filenames and paths
         self.combine_components(root_name, cm_ai_types, g_ai_types)
 
-    ###TODO: CREATE FILE PATHS FOR FIGURES
-
     #This function takes the number of iterations from settings into account to create all of the needed
     #filepaths for the experiment. If it is just a tournament, all the filepath arrays will only have one
     #element. 
@@ -74,7 +69,6 @@ class FileManager:
 
 
         if self.experiment_settings.experiment_type == self.experiment_types.LEARNING_EXPERIMENT:
-            #TODO: take care of naming the learning_experiment only files here
             
             lower = self.experiment_settings.iteration_range[0]
             upper = self.experiment_settings.iteration_range[1]
@@ -215,20 +209,6 @@ class FileManager:
 
         else:
             self.set_common_files(name, "")
-
-            '''
-            PERC_SELECTED_DIR = "percent_selected_figs"
-            ARM_WEIGHTS_DIR = "arm_weights_figs"
-            PERF_PROG_DIR = "performance_progression_figs"
-
-            performace_progression_filepaths = []
-            arm_weights_filepaths = []
-            percent_selected_filepaths = []
-
-            performace_progression_dir_path = None 
-            arm_weights_dir_path = None 
-            percent_selected_dir_path = None
-            '''
     
     def create_learn_fig_paths(self, name, type_prefix, itr_suffix):
         name_elements = self.file_name_directory_elements
@@ -240,7 +220,6 @@ class FileManager:
             self.file_paths_obj.performance_progression_sliding_window_filepaths[b_type] = {}
         
 
-        #TODO: Move the following two if statements out of this.
         if b_type not in self.file_paths_obj.percent_selected_filepaths:
             #arm percentage figures
             dir = self.file_paths_obj.percent_selected_dir_path

@@ -5,7 +5,6 @@ It also is in charge of parsing the settings in the config file.
 All objects that are shared among files are stored here. I store them here because a lot of the settings get changed at start up and need to 
 be kept for all the files. 
 
-author: Spencer Brosnahan
 '''
 
 import json
@@ -155,7 +154,6 @@ class ExperimentSettings:
         elif self.ensemble_parameters != None and len(self.ensemble_parameters) > 0 and type(self.ensemble_parameters) == list and len(self.ensemble_parameters) > 1:
             self.independent_variable = self.ensemble_parameters
         
-        #TODO: As more are added, we can check if more than one have an array size greater than 1 and throw an error if they do. 
 
 
 

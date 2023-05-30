@@ -1,5 +1,3 @@
-import copy
-
 class BotInitializer():
     def __init__(self, bot_types, ai_types, bot_ai_types, bot_lm_types, bot_paths, bot_objects, bot_constructor_types, ensemble_cm_types, ensemble_g_types):
         self.bot_types = bot_types
@@ -25,24 +23,14 @@ class BotInitializer():
 
         if bot_type_1 != None:
             bot_settings.CONSTRUCTOR_PATHS = self.bot_paths.get_paths_for_bot(bot_type_1)
-            if self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.ASSOCIATOR:
-                codemaster_bot = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.ASSOCIATOR_AI_CODEMASTER)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.DISTANCE_ASSOCIATOR:
+            if self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.DISTANCE_ASSOCIATOR:
                 codemaster_bot = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.DISTANCE_ASSOCIATOR_AI_CODEMASTER)
             elif self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.BASELINE:
                 codemaster_bot = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.VECTOR_BASELINE_CODEMASTER)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.OPTIMIZED_BASELINE:
-                codemaster_bot = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.OPTIMIZED_VECTOR_BASELINE_CODEMASTER)
             elif self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.DISTANCE_ENSEMBLE:
                 codemaster_bot = self.initialize_ensemble_cm(self.ai_types.DISTANCE_ENSEMBLE, bot_type_2, bot_settings)
             elif self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.RANDOM_DISTANCE_ENSEMBLE:
                 codemaster_bot = self.initialize_ensemble_cm(self.ai_types.RANDOM_DISTANCE_ENSEMBLE, bot_type_2, bot_settings)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.ASSOCIATOR_ENSEMBLE:
-                codemaster_bot = self.initialize_ensemble_cm(self.ai_types.ASSOCIATOR_ENSEMBLE, bot_type_2, bot_settings)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE:
-                codemaster_bot = self.initialize_ensemble_cm(self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE, bot_type_2, bot_settings)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_1) == self.ai_types.RANDOM:
-                codemaster_bot = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.RANDOM_CODEMASTER)
             else:
                 print("Error loading codemaster")
                 return
@@ -51,20 +39,12 @@ class BotInitializer():
         
         if bot_type_2 != None:
             bot_settings.CONSTRUCTOR_PATHS = self.bot_paths.get_paths_for_bot(bot_type_2)
-            if self.bot_ai_types.get_bot_ai_type(bot_type_2) == self.ai_types.ASSOCIATOR:
-                guesser_bot = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.ASSOCIATOR_AI_GUESSER)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_2) == self.ai_types.BASELINE:
+            if self.bot_ai_types.get_bot_ai_type(bot_type_2) == self.ai_types.BASELINE:
                 guesser_bot = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.VECTOR_BASELINE_GUESSER)
             elif self.bot_ai_types.get_bot_ai_type(bot_type_2) == self.ai_types.DISTANCE_ENSEMBLE:
                 guesser_bot = self.initialize_ensemble_g(self.ai_types.DISTANCE_ENSEMBLE, bot_type_1, bot_settings)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_2) == self.ai_types.ASSOCIATOR_ENSEMBLE:
-                guesser_bot = self.initialize_ensemble_g(self.ai_types.ASSOCIATOR_ENSEMBLE, bot_type_1, bot_settings)
             elif self.bot_ai_types.get_bot_ai_type(bot_type_2) == self.ai_types.RANDOM_DISTANCE_ENSEMBLE:
                 guesser_bot = self.initialize_ensemble_g(self.ai_types.RANDOM_DISTANCE_ENSEMBLE, bot_type_1, bot_settings)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_2) == self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE:
-                guesser_bot = self.initialize_ensemble_g(self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE, bot_type_1, bot_settings)
-            elif self.bot_ai_types.get_bot_ai_type(bot_type_2) == self.ai_types.RANDOM:
-                guesser_bot = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.RANDOM_GUESSER)
             else:
                 print("Error loading guesser")
                 return 
@@ -80,14 +60,6 @@ class BotInitializer():
         if ai_type == self.ai_types.DISTANCE_ENSEMBLE:
             bot_settings.AI_TYPE = self.ai_types.DISTANCE_ENSEMBLE
             bot_settings.LEARNING_ALGORITHM = self.orig_alg
-            constructor = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.ENSEMBLE_AI_CODEMASTER)
-        elif ai_type == self.ai_types.ASSOCIATOR_ENSEMBLE:
-            bot_settings.AI_TYPE = self.ai_types.ASSOCIATOR_ENSEMBLE
-            bot_settings.LEARNING_ALGORITHM = self.orig_alg
-            constructor = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.ENSEMBLE_AI_CODEMASTER)
-        elif ai_type == self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE:
-            bot_settings.AI_TYPE = self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE
-            bot_settings.LEARNING_ALGORITHM = "T4"
             constructor = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.ENSEMBLE_AI_CODEMASTER)
         elif ai_type == self.ai_types.RANDOM_DISTANCE_ENSEMBLE:
             bot_settings.AI_TYPE = self.ai_types.RANDOM_DISTANCE_ENSEMBLE
@@ -122,14 +94,6 @@ class BotInitializer():
         if ai_type == self.ai_types.DISTANCE_ENSEMBLE:
             bot_settings.AI_TYPE = self.ai_types.DISTANCE_ENSEMBLE
             bot_settings.LEARNING_ALGORITHM = self.orig_alg
-            constructor = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.ENSEMBLE_AI_GUESSER)
-        elif ai_type == self.ai_types.ASSOCIATOR_ENSEMBLE:
-            bot_settings.AI_TYPE = self.ai_types.ASSOCIATOR_ENSEMBLE
-            bot_settings.LEARNING_ALGORITHM = self.orig_alg
-            constructor = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.ENSEMBLE_AI_GUESSER)
-        elif ai_type == self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE:
-            bot_settings.AI_TYPE = self.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE
-            bot_settings.LEARNING_ALGORITHM = "T4"
             constructor = self.bot_objects.get_bot_object_copy(self.bot_constructor_types.ENSEMBLE_AI_GUESSER)
         elif ai_type == self.ai_types.RANDOM_DISTANCE_ENSEMBLE:
             bot_settings.AI_TYPE = self.ai_types.RANDOM_DISTANCE_ENSEMBLE

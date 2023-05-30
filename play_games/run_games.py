@@ -1,12 +1,4 @@
-'''
-This file will play 30 games between 2 bots that are passed in 
-
-When you add a bot, make sure you add it's lm path to paths and add the bot type to BotTypes.py and put it into the codemaster or guesser list
-
-authors: Kyle Rogers and Spencer Brosnahan
-'''
 import random
-import numpy as np
 
 from game import Game
 

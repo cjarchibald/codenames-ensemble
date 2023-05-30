@@ -17,17 +17,11 @@ from utils.bot_objects import BotObjects
 from ai_components.ensemble_ai_components.ensemble_utils import EnsembleCodemasterBots, EnsembleGuesserBots
 
 #bot imports
-from codemasters.associator_ai_codemaster import AssociatorAICodemaster
-from codemasters.vector_baseline_codemaster import VectorBaselineCodemaster
-from codemasters.optimized_vector_baseline_codemaster import OptimizedVectorBaselineCodemaster
 from codemasters.ensemble_ai_codemaster import EnsembleAICodemaster
 from codemasters.distance_associator_ai_codemaster import DistanceAssociatorAICodemaster
-from codemasters.random_codemaster import RandomCodemaster
 
-from guessers.associator_ai_guesser import AssociatorAIGuesser
 from guessers.vector_baseline_guesser import VectorBaselineGuesser
 from guessers.ensemble_ai_guesser import EnsembleAIGuesser
-from guessers.random_guesser import RandomGuesser
 
 #function imports
 from utils.utils import cond_print
@@ -89,16 +83,10 @@ class ObjectManager:
     '''
     def create_bot_objects_arg(self):
         bot_objects_arg = {
-            BotConstructorTypes.ASSOCIATOR_AI_CODEMASTER : AssociatorAICodemaster(),
-            BotConstructorTypes.VECTOR_BASELINE_CODEMASTER : VectorBaselineCodemaster(),
-            BotConstructorTypes.OPTIMIZED_VECTOR_BASELINE_CODEMASTER : OptimizedVectorBaselineCodemaster(),
             BotConstructorTypes.ENSEMBLE_AI_CODEMASTER : EnsembleAICodemaster(),
             BotConstructorTypes.DISTANCE_ASSOCIATOR_AI_CODEMASTER : DistanceAssociatorAICodemaster(),
-            BotConstructorTypes.RANDOM_CODEMASTER : RandomCodemaster(),
-            BotConstructorTypes.ASSOCIATOR_AI_GUESSER : AssociatorAIGuesser(), 
             BotConstructorTypes.VECTOR_BASELINE_GUESSER : VectorBaselineGuesser(),
             BotConstructorTypes.ENSEMBLE_AI_GUESSER : EnsembleAIGuesser(),
-            BotConstructorTypes.RANDOM_GUESSER : RandomGuesser(),
         }
         return bot_objects_arg
     

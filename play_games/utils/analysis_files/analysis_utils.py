@@ -40,42 +40,13 @@ class LearnParseKeys:
 class Stats: #ALL stats that will be used for graphing and for stat dict creation
 
     #KEYS FOR DATA GATHERING PHASE
-    '''
-    Keys for raw stats. These keys will be used for the stats gathered while parsing files. We can use the stats kepts under these keys to create 
-    Statistics that mean something to us
-
-    This first set of keys will be used to derive the average number of each type of word flipped per round. We will line them up with the number of rounds per
-    game to calculate the average number of each word type flipped per game. 
-    We can also calculate the average number of each type flipped per round by lining up with the number of guesses by round
-
-    We can used the number of assassin words flipped to calculate the loss by assassin
-    '''
     RED_WORDS_FLIPPED_BY_ROUND = "Red Words Flipped By Round"
     BLUE_WORDS_FLIPPED_BY_ROUND = "Blue Words Flipped By Round"
     BYSTANDER_WORDS_FLIPPED_BY_ROUND = "Bystander Words Flipped By Round"
     ASSASSIN_WORDS_FLIPPED_BY_ROUND = "Assassin Words Flipped By Round"
-
-    """
-    The next set of keys will represent data that can be used to help calculate the other stats. They can be used to divide stats by game, or round.
-    They can also be used to calculate scores later. 
-
-    Number of rounds per game:
-    Will be stored as an array with each element as the number of rounds per game. This replaces game scores. 
-    WE MUST LINE THIS UP WITH GAME WIN LOSS TO DERIVE THE GAME SCORES!!! If a number of rounds lines up with a loss, it's score is 25. If it lines up with a win,
-    its score is the number of rounds
-
-    Game win loss:
-    array will be kept with 1s and 0s to represent the games won and lost respectively. Used to calculate Win Rate and can be paired with num rounds per
-    game. See above description
-
-    Clue Number by round:
-    This can be used to gain insite into the relationship between clues given and words guessed
-
-    """ 
     NUM_ROUNDS_PER_GAME = "Number of Rounds Per Game" 
     GAME_WIN_LOSS = "Game Win Loss" 
     CLUE_NUM_BY_ROUND = "Clue Number Given By Round"
-
     '''
     These are for learning experiments
     '''
@@ -83,21 +54,6 @@ class Stats: #ALL stats that will be used for graphing and for stat dict creatio
     CHOSEN_BOTS_BY_ROUND = "Chosen Bots by Round"
 
     #KEYS FOR DATA PROCESSING (Use the keys for data gathering to access the saved dictionary and save data to a new dictionary)
-    '''
-    Note that as we process data we will do so on a game by game basis (like chunk processing) by getting the info for each game and appending the necessary
-    values to the stats arrays. 
-    Note that all of these stats are specific for a bot pairing over a certain number of games
-    These stats are saved out for our visualizations
-    '''
-
-    '''
-    These are the bread and butter stats that we do a lot of the work for. They will be used in the final dictionary. 
-    The pair scores is an array that has the scores at the end of every round. We don't need to calculate a single value because the final value will be 
-    at the end. These are created by creating a vector using the number of card types for each round and getting a prediction every time
-
-    Pair scores has all of the pair scores at the end of every game so that we can take the average of each game accross all learning periods when doing our learning period analysis. 
-    The final one is our average for the whole learning period/tournament. 
-    '''
     WIN_RATE = "Win Rate"
     AVG_WIN_TIME = "Average Win Time"
     MIN_WIN_TIME = "Min Win Time"

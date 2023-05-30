@@ -1,9 +1,3 @@
-"""
-This file does the actual game simulation and logs the stats and returns some to run_n_games. 
-
-authors: Kim et al., Spencer Brosnahan, and Dallin Hunter
-"""
-
 import random
 import time
 import enum

@@ -1,8 +1,3 @@
-'''
-This file will pair up bots and pass them into run_games. It will also make a cross table of results
-
-authors: Spencer Brosnahan and Kyle Rogers
-'''
 import os
 import sys
 print(os.path.join(os.getcwd(), os.path.join("play_games", "utils")))
@@ -76,9 +71,3 @@ class RunTournament:
             self.object_manager.file_manager.LEARN_LOG_FILE_CM.close()
         if len(self.object_manager.file_paths_obj.learn_log_filepaths_g) > 0:
             self.object_manager.file_manager.LEARN_LOG_FILE_G.close()
-
-
-# if __name__=="__main__":
-#     object_manager = ObjectManager()
-#     tournament = RunTournament(object_manager)
-#     tournament.run()

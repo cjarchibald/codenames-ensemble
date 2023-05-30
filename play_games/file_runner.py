@@ -4,7 +4,6 @@ from utils.object_manager import ObjectManager
 from run_tournament import RunTournament
 from run_learning_experiment import RunLearningExperiment
 from run_parameter_experiment import RunParameterExperiment
-from utils.file_cleaner import FileCleaner
 from utils.file_alignment_checker import FileAlignmentChecker
 
 class FileRunner():
@@ -26,11 +25,6 @@ class FileRunner():
     
     def run_analysis(self):
         self.object_manager.results_analyzer.run_analysis()
-    
-    def clean_logs(self):
-        file_cleaner = FileCleaner(self.object_manager)
-        # file_cleaner.clean_learn_logs()
-        file_cleaner.delete_small_files()
     
     def check_files(self):
         file_alignment_checker = FileAlignmentChecker(self.object_manager)
@@ -54,7 +48,7 @@ if __name__=="__main__":
         if len(argv) > 3:
             file_runner.object_manager.experiment_settings.iteration_range = [int(argv[2]), int(argv[3])]
     else: 
-        file_runner.object_manager.experiment_settings.config_setting = "DIST_ASSOC_SOL"
+        file_runner.object_manager.experiment_settings.config_setting = "DIST_ENS_WO"
         file_runner.object_manager.experiment_settings.setup()
     #now we reset the filepaths
         
@@ -69,7 +63,5 @@ if __name__=="__main__":
     else:
         file_runner.run_tournament()
 
-    # file_runner.clean_logs()
-
-    # print("all files aligned:", file_runner.check_files())
-    # file_runner.run_analysis()
+    print("all files aligned:", file_runner.check_files())
+    file_runner.run_analysis()
