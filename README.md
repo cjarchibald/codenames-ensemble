@@ -61,6 +61,22 @@ Here, I will walk through the sub-directories in the repository and briefly expl
         - 'visualizations' contains figures and tables to help interpret experiment results. 
 
 
+## Running Experiments
 
+Experiments are configured in the 'config.ini' file found in 'play_games/utils'
+
+### Learning Experiments 
+
+A learning experiment is where we analyze how an ensemble or ACE bot learns over a fixed number of games. 'x' number of learning periods are run each comprised of 'y' number of games. 
+
+To run one, make sure your current directory in the command line is the repository root 'codenames-ensemble'. Then run the file and specify the experiment key that you used to configure the experiment settings in 'config.ini' along with the iteration range of learning periods for your experiment. For expample, 
+
+``` 
+python play_games/file_runner [SPECIFY EXPERIMENT KEY HERE] [START LP] [END LP]
+```
+
+the end LP is not inclusive. 
+
+### Parameter Experiments 
 
 
