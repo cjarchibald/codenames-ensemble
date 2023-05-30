@@ -1,4 +1,6 @@
-##Setting up the environment
+# Codenames Ensemble
+
+## Setting Up the Environment
 
 run the following command 
 
