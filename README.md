@@ -1,4 +1,5 @@
-Setting up the environment 
+##Setting up the environment
+
 run the following command 
 
 ```
