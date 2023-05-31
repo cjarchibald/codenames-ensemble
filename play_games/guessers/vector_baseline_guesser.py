@@ -31,9 +31,6 @@ class VectorBaselineGuesser():
     def load_dict(self, words):
         self.board_words = words.copy()
 
-    def give_feedback(self, guess, end_status):
-        pass
-
 
     def compute_distance(self, clue, board):
         w2v = []
