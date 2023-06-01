@@ -22,6 +22,7 @@ dependencies:
   - libtiff=4.2.0=hdb42f99_1
   - libwebp=1.2.2=h56c3ce4_0
   - libwebp-base=1.2.2=hca72f7f_0
+  - llvm-openmp=12.0.0=h0dcd299_1
   - lz4-c=1.9.3=h23ab428_1
   - matplotlib=3.5.1=py38hecd8cb5_1
   - matplotlib-base=3.5.1=py38hfb0c5b7_1
@@ -41,11 +42,13 @@ dependencies:
   - python=3.8.16=h218abb5_3
   - python-dateutil=2.8.2=pyhd3eb1b0_0
   - readline=8.2=hca72f7f_0
+  - scikit-learn=1.0.2=py38hae1ba45_1
   - scipy=1.7.3=py38h8c7af03_0
   - setuptools=67.8.0=py38hecd8cb5_0
   - six=1.16.0=pyhd3eb1b0_1
   - sqlite=3.41.2=h6c40b1e_0
   - tabulate=0.8.9=py38hecd8cb5_0
+  - threadpoolctl=2.2.0=pyh0d69192_0
   - tk=8.6.12=h5d9f67b_0
   - tornado=6.1=py38h9ed2024_0
   - wheel=0.38.4=py38hecd8cb5_0

@@ -55,11 +55,7 @@ class EnsembleAIGuesser(EnsambleAI):
         
 
     def create_strategy_inner(self):
-        if self.learning_algorithm == self.learning_algorithms.T1:
-            return EnsembleAIGuesser.StrategyOne(self)
-        elif self.learning_algorithm == self.learning_algorithms.T2:
-            return EnsembleAIGuesser.StrategyTwo(self)
-        elif self.learning_algorithm == self.learning_algorithms.T3:
+        if self.learning_algorithm == self.learning_algorithms.T3:
             return EnsembleAIGuesser.StrategyThree(self)
         elif self.learning_algorithm == self.learning_algorithms.T4:
             return EnsembleAIGuesser.StrategyFour(self)

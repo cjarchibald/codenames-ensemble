@@ -57,11 +57,7 @@ class EnsembleAICodemaster(EnsambleAI):
         
 
     def create_strategy_inner(self):
-        if self.learning_algorithm == self.learning_algorithms.T1:
-            return EnsembleAICodemaster.StrategyOne(self)
-        elif self.learning_algorithm == self.learning_algorithms.T2:
-            return EnsembleAICodemaster.StrategyTwo(self)
-        elif self.learning_algorithm == self.learning_algorithms.T3:
+        if self.learning_algorithm == self.learning_algorithms.T3:
             return EnsembleAICodemaster.StrategyThree(self)
         elif self.learning_algorithm == self.learning_algorithms.T4:
             return EnsembleAICodemaster.StrategyFour(self)

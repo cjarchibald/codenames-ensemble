@@ -22,7 +22,7 @@ class ExperimentSettings:
 
         ###---set this here---###
 
-        self.config_setting = "DIST_ASSOC_RAND_ENS_W"
+        self.config_setting = "DIST_ENS_W"
 
         ###---set these in config file---###
 
