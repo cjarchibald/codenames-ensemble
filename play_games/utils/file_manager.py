@@ -9,7 +9,6 @@ It loads the needed filepaths into the file_paths_obj and opens the needed files
 from os.path import exists
 from os import remove
 import os
-import shutil
 
 
 class FileManager:

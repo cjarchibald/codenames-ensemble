@@ -56,12 +56,12 @@ if __name__=="__main__":
 
     #at this point, we are good to go with our new settings
 
-    if file_runner.object_manager.experiment_settings.experiment_type == file_runner.object_manager.experiment_types.PARAMETER_EXPERIMENT:
-        file_runner.run_parameter_experiment()
-    elif file_runner.object_manager.experiment_settings.experiment_type == file_runner.object_manager.experiment_types.LEARNING_EXPERIMENT:
-        file_runner.run_learning_experiment()
-    else:
-        file_runner.run_tournament()
+    # if file_runner.object_manager.experiment_settings.experiment_type == file_runner.object_manager.experiment_types.PARAMETER_EXPERIMENT:
+    #     file_runner.run_parameter_experiment()
+    # elif file_runner.object_manager.experiment_settings.experiment_type == file_runner.object_manager.experiment_types.LEARNING_EXPERIMENT:
+    #     file_runner.run_learning_experiment()
+    # else:
+    #     file_runner.run_tournament()
 
     print("all files aligned:", file_runner.check_files())
     file_runner.run_analysis()

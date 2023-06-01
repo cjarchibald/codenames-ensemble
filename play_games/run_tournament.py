@@ -7,6 +7,10 @@ from run_games import RunGames
 
 #Pass in settings object to other files and set the needed parameters
 
+def create_path(fp):
+    if not os.path.exists(os.path.dirname(fp)):
+        os.makedirs(os.path.dirname(fp))
+
 class RunTournament:
     def __init__(self, object_manager):
         self.object_manager = object_manager
@@ -33,15 +37,15 @@ class RunTournament:
         else:
             path = self.object_manager.file_paths_obj.round_log_filepaths[fi]
         
-        head = os.path.split(path)[0]
-        if not os.path.exists(head):
-            os.makedirs(head)
+        create_path(path)
         self.object_manager.file_manager.ROUND_FILE = open(path, 'w+', encoding='utf8')
 
         if len(self.object_manager.file_paths_obj.learn_log_filepaths_cm) > 0:
+            create_path(self.object_manager.file_paths_obj.learn_log_filepaths_cm[fi])
             self.object_manager.file_manager.LEARN_LOG_FILE_CM = open(self.object_manager.file_paths_obj.learn_log_filepaths_cm[fi], 'w+', encoding='utf8')
             is_learning_experiment = True
         if len(self.object_manager.file_paths_obj.learn_log_filepaths_g) > 0:
+            create_path(self.object_manager.file_paths_obj.learn_log_filepaths_g[fi])
             self.object_manager.file_manager.LEARN_LOG_FILE_G = open(self.object_manager.file_paths_obj.learn_log_filepaths_g[fi], 'w+', encoding='utf8')
             is_learning_experiment = True
 
@@ -54,12 +58,8 @@ class RunTournament:
                 if is_learning_experiment:
                     #If neither bot is an ensemble, we don't play them together
                     if self.object_manager.bot_ai_types.get_bot_ai_type(b1) != self.object_manager.ai_types.DISTANCE_ENSEMBLE \
-                        and self.object_manager.bot_ai_types.get_bot_ai_type(b1) != self.object_manager.ai_types.ASSOCIATOR_ENSEMBLE \
                         and self.object_manager.bot_ai_types.get_bot_ai_type(b2) != self.object_manager.ai_types.DISTANCE_ENSEMBLE \
-                        and self.object_manager.bot_ai_types.get_bot_ai_type(b2) != self.object_manager.ai_types.ASSOCIATOR_ENSEMBLE \
-                        and self.object_manager.bot_ai_types.get_bot_ai_type(b1) != self.object_manager.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE \
                         and self.object_manager.bot_ai_types.get_bot_ai_type(b1) != self.object_manager.ai_types.RANDOM_DISTANCE_ENSEMBLE \
-                        and self.object_manager.bot_ai_types.get_bot_ai_type(b2) != self.object_manager.ai_types.RANDOM_ASSOCIATOR_ENSEMBLE \
                         and self.object_manager.bot_ai_types.get_bot_ai_type(b2) != self.object_manager.ai_types.RANDOM_DISTANCE_ENSEMBLE:
                         continue
                 self.object_manager.cond_print(f'Simulating {n} games with {b1} and {b2}', self.object_manager.experiment_settings.verbose_flag)

@@ -1,10 +1,7 @@
-import json
 import numpy as np
-import joblib
 from tabulate import tabulate
-import copy
 import matplotlib.pyplot as plt
-import os
+import os, json, copy, joblib
 import scipy.stats as stats
 from matplotlib.ticker import MaxNLocator
 
@@ -64,6 +61,11 @@ class ResultsAnalyzer:
         plt.rcParams['figure.figsize'] = [10, 8]
         plt.rcParams['figure.subplot.bottom'] = 0.15
     
+    def create_path(self, fp):
+        if not os.path.exists(os.path.dirname(fp)):
+            os.makedirs(os.path.dirname(fp))
+
+    
     def parse_data(self, round_logs, learn_logs_cm, learn_logs_g, parsed_data_filepaths):
 
         #Compile the needed filepaths to parse
@@ -91,6 +93,7 @@ class ResultsAnalyzer:
 
                 final_dict[counter] = merged_dict
 
+                self.create_path(filepath)
                 with open(filepath, 'w+') as f:
                     json.dump(merged_dict, f)
 
@@ -178,6 +181,7 @@ class ResultsAnalyzer:
             processed_data[self.stat_dict_keys.FINAL_KEY] = self.get_averages(processed_data)
 
             #Save the final data structure
+            self.create_path(processed_data_filepaths[-1])
             with open(processed_data_filepaths[-1], 'w+') as f:
                 json.dump(processed_data[self.stat_dict_keys.FINAL_KEY], f)
             
@@ -188,6 +192,7 @@ class ResultsAnalyzer:
         #save the data for individual files
         for counter in parsed_data.keys():
             filepath = processed_data_filepaths[counter]
+            self.create_path(filepath)
             with open(filepath, 'w+') as f:
                 json.dump(processed_data[counter], f)
 
@@ -341,14 +346,10 @@ class ResultsAnalyzer:
 
                 parsed_data_filepaths = self.file_paths_obj.parsed_data_filepaths[i]
                 #Thise will all belong to the same directory, so I can just grab the first one
-                head = os.path.split(parsed_data_filepaths[0])[0]
-                if not os.path.exists(head):
-                    os.makedirs(head)
+                self.create_path(parsed_data_filepaths[0])
                 
                 processed_data_filepaths = self.file_paths_obj.processed_data_filepaths[i]
-                head = os.path.split(processed_data_filepaths[0])[0]
-                if not os.path.exists(head):
-                    os.makedirs(head)
+                self.create_path(processed_data_filepaths[0])
 
                 if not self.use_preloaded_parsed:
                     parsed_data = self.parse_data(round_logs, [], [], parsed_data_filepaths)
@@ -422,9 +423,7 @@ class ResultsAnalyzer:
         for b_type in stats_vals:
             for stat in stats_vals[b_type]:
                 fp = self.file_paths_obj.param_comparison_fig_filepaths[b_type]['final'][stat][0]
-                head = os.path.split(fp)[0]
-                if not os.path.exists(head):
-                    os.makedirs(head)
+                self.create_path(fp)
 
                 y = stats_vals[b_type][stat]
                 plt.plot(parameters, y)
@@ -461,17 +460,17 @@ class ResultsAnalyzer:
                     if has_ens_cm and not has_ens_g:
                         #then I want to find the best average codemaster 
                         best_avg_cm = performance_stats[self.conversion[stat]][self.stat_dict_keys.BEST_AVG][self.stat_dict_keys.CODEMASTER]
-                        best_avg_cm_score = performance_stats[self.stat_dict_keys.SOLO_BOT_DATA][best_avg_cm][g][self.conversion[stat]]
+                        best_avg_cm_score = self.extract_val(performance_stats[self.stat_dict_keys.SOLO_BOT_DATA][best_avg_cm][g][self.conversion[stat]])
 
                         #I also need to find the best possible score
-                        best_overall_cm_score_for_g = performance_stats[self.conversion[stat]][self.stat_dict_keys.BEST_OVERALL][self.stat_dict_keys.CODEMASTER][g]
+                        best_overall_cm_score_for_g = self.extract_val(performance_stats[self.conversion[stat]][self.stat_dict_keys.BEST_OVERALL][self.stat_dict_keys.CODEMASTER][g])
                         
                     
                     if has_ens_g and not has_ens_cm:
                         best_avg_g = performance_stats[self.conversion[stat]][self.stat_dict_keys.BEST_AVG][self.stat_dict_keys.GUESSER]
-                        best_avg_g_score = performance_stats[self.stat_dict_keys.SOLO_BOT_DATA][cm][best_avg_g][self.conversion[stat]]
+                        best_avg_g_score = self.extract_val(performance_stats[self.stat_dict_keys.SOLO_BOT_DATA][cm][best_avg_g][self.conversion[stat]])
 
-                        best_overall_g_score_for_cm = performance_stats[self.conversion[stat]][self.stat_dict_keys.BEST_OVERALL][self.stat_dict_keys.GUESSER][cm]
+                        best_overall_g_score_for_cm = self.extract_val(performance_stats[self.conversion[stat]][self.stat_dict_keys.BEST_OVERALL][self.stat_dict_keys.GUESSER][cm])
                     
                     if has_ens_cm:
                         #get the rand ens cm data 
@@ -480,7 +479,6 @@ class ResultsAnalyzer:
                     if has_ens_g:
                         rand_g = self.find_rand_bot(list(processed_data[list(processed_data.keys())[0]].keys()))
                         rand_ens_g_scores = processed_data[cm][rand_g][stat]
-                    
                     
                     #Now we do the actual figure creation
 
@@ -519,8 +517,7 @@ class ResultsAnalyzer:
                     plt.legend(fontsize=fsize)
                     for fp in fps:
                         fp += "_" + cm + "+" + g + ".jpg"
-                        if not os.path.exists(os.path.dirname(fp)):
-                            os.makedirs(os.path.dirname(fp))
+                        self.create_path(fp)
                         plt.savefig(fp)
                     plt.clf()
 
@@ -542,6 +539,7 @@ class ResultsAnalyzer:
             tm_weights = [4.0 if w == np.inf else w for w in tm_weights]
             plt.plot(x_axis, tm_weights, label=tm)
         plt.legend()
+        self.create_path(save_path)
         plt.savefig(save_path)
         plt.clf()
     
@@ -561,6 +559,7 @@ class ResultsAnalyzer:
 
         ax.bar(new_x, y_axis)
         plt.xticks(rotation = -45, fontsize = 10)
+        self.create_path(save_file)
         plt.savefig(save_file)
         plt.clf() 
 
@@ -652,6 +651,7 @@ class ResultsAnalyzer:
         #We start with adding the 
         #Save table
         #open file here and pass it into the function 
+        self.create_path(fp)
         with open(fp, "w+") as f:
             self.save_tables(tables, f)
         
@@ -709,8 +709,8 @@ class ResultsAnalyzer:
                     else:
                         g = performance_stats[stat][needed_cols[i]][self.stat_dict_keys.GUESSER]
                         if self.bot_lm_types.get_bot_lm_type(g) != self.bot_lm_types.get_bot_lm_type(table[j][0]):
-                            table[j].append(round(solo_bot_data[table[j][0]][g][stat], self.precision))
-                            best_avg_col_vals.append(round(solo_bot_data[table[j][0]][g][stat], self.precision))
+                            table[j].append(round(self.extract_val(solo_bot_data[table[j][0]][g][stat]), self.precision))
+                            best_avg_col_vals.append(round(self.extract_val(solo_bot_data[table[j][0]][g][stat]), self.precision))
                         else:
                             table[j].append('-')
 
@@ -733,8 +733,8 @@ class ResultsAnalyzer:
                         cm = performance_stats[stat][needed_rows[i]][self.stat_dict_keys.CODEMASTER]
                         #Check to see if this is against the same bot 
                         if self.bot_lm_types.get_bot_lm_type(cm) != self.bot_lm_types.get_bot_lm_type(table[0][j]):
-                            table[-1].append(round(solo_bot_data[cm][table[0][j]][stat], self.precision))
-                            best_avg_row_vals.append(round(solo_bot_data[cm][table[0][j]][stat], self.precision))
+                            table[-1].append(round(self.extract_val(solo_bot_data[cm][table[0][j]][stat]), self.precision))
+                            best_avg_row_vals.append(round(self.extract_val(solo_bot_data[cm][table[0][j]][stat]), self.precision))
                         else:
                             table[-1].append('-')
                 else:
@@ -941,7 +941,7 @@ class ResultsAnalyzer:
             table.append([codemasters[i]])
             for j in range(len(guessers)):
                 if self.experiment_settings.include_same_lm or (self.bot_lm_types.get_bot_lm_type(codemasters[i]) != self.bot_lm_types.get_bot_lm_type(guessers[j])):
-                    table[i].append(round(processed_data[codemasters[i]][guessers[j]][stat], self.precision))
+                    table[i].append(round(self.extract_val(processed_data[codemasters[i]][guessers[j]][stat]), self.precision))
                 else:
                     table[i].append('-')
 
@@ -977,6 +977,10 @@ class ResultsAnalyzer:
             best = -np.inf 
         return best
 
+    def extract_val(self, val):
+        if isinstance(val, tuple) or isinstance(val, list):
+            return val[0]
+        return val
 
     def calculate_performance_stats(self, solo_bot_data, has_ensemble_cm, has_ensemble_g):
         #Now I need to calculate average performances, best avg performance, best overall performance for each stat
@@ -1009,12 +1013,13 @@ class ResultsAnalyzer:
                             self.bot_lm_types.get_bot_lm_type(cm) == self.bot_lm_types.get_bot_lm_type(g):
                             continue
 
-                        values.append(solo_bot_data[cm][g][stat])
+                        values.append(self.extract_val(solo_bot_data[cm][g][stat]))
+
 
                         #We can also take care of finding the best overall cm for g
                         if g not in best_overall_cm_for_g:
                             best_overall_cm_for_g[g] = self.set_best(stat)
-                        best_overall_cm_for_g[g] = self.compare_to_best(best_overall_cm_for_g[g], solo_bot_data[cm][g][stat], stat)
+                        best_overall_cm_for_g[g] = self.compare_to_best(best_overall_cm_for_g[g], self.extract_val(solo_bot_data[cm][g][stat]), stat)
 
                     avg_v = round(np.mean(values), self.precision)
 
@@ -1053,12 +1058,12 @@ class ResultsAnalyzer:
                             self.bot_lm_types.get_bot_lm_type(cm) == self.bot_lm_types.get_bot_lm_type(g):
                             continue
 
-                        values.append(solo_bot_data[cm][g][stat])
+                        values.append(self.extract_val(solo_bot_data[cm][g][stat]))
 
                         #We can also take care of finding the best overall cm for g
                         if cm not in best_overall_g_for_cm:
                             best_overall_g_for_cm[cm] = self.set_best(stat)
-                        best_overall_g_for_cm[cm] = self.compare_to_best(best_overall_g_for_cm[cm], solo_bot_data[cm][g][stat], stat)
+                        best_overall_g_for_cm[cm] = self.compare_to_best(best_overall_g_for_cm[cm], self.extract_val(solo_bot_data[cm][g][stat]), stat)
 
                     avg_v = round(np.mean(values), self.precision)
 
