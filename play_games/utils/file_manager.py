@@ -58,9 +58,9 @@ class FileManager:
         contains_ensemble_g = False
 
         #If there are ensemble bots then we need to instantiate those filepaths
-        if self.ai_types.DISTANCE_ENSEMBLE in cm_ai_types or self.ai_types.ASSOCIATOR_ENSEMBLE in cm_ai_types:
+        if self.ai_types.DISTANCE_ENSEMBLE in cm_ai_types:
             contains_ensemble_cm = True
-        if self.ai_types.DISTANCE_ENSEMBLE in g_ai_types or self.ai_types.ASSOCIATOR_ENSEMBLE in g_ai_types:
+        if self.ai_types.DISTANCE_ENSEMBLE in g_ai_types:
             contains_ensemble_g = True
         
         name_elements = self.file_name_directory_elements
