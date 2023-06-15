@@ -230,6 +230,11 @@ class FileManager:
             dir = self.file_paths_obj.arm_weights_dir_path
             this_name = name_elements.ARM_WEIGHTS_PREFIX + type_prefix + name + str(itr_suffix)
             self.file_paths_obj.arm_weights_filepaths[b_type] = os.path.join(dir, this_name)
+        
+        if b_type not in self.file_paths_obj.final_stat_distribution_filepaths:
+            dir = self.file_paths_obj.final_stat_distribution_dir_path
+            this_name = name_elements.FINAL_STAT_DIST_PREFIX + type_prefix + name + str(itr_suffix)
+            self.file_paths_obj.final_stat_distribution_filepaths[b_type] = os.path.join(dir, this_name)
 
         #performance progression figures (loop through all of the wanted stats for this)
         for stat in self.performance_progression_stat_keys:
@@ -406,6 +411,8 @@ class FileManager:
                 name_elements.FIGURES_DIR, name_elements.LEARN_FIGS_DIR, name_elements.ARM_WEIGHTS_DIR)
             self.file_paths_obj.percent_selected_dir_path = os.path.join(root_path, name_elements.VISUALIZATIONS_DIR, \
                 name_elements.FIGURES_DIR, name_elements.LEARN_FIGS_DIR, name_elements.PERC_SELECTED_DIR)  
+            self.file_paths_obj.final_stat_distribution_dir_path = os.path.join(root_path, name_elements.VISUALIZATIONS_DIR, \
+                name_elements.FIGURES_DIR, name_elements.LEARN_FIGS_DIR, name_elements.FINAL_STAT_DIST_DIR)
             
             self.file_paths_obj.learn_period_analyses_dir_path = os.path.join(root_path, \
                 name_elements.LEARN_PERIOD_ANALYSES_DIR)

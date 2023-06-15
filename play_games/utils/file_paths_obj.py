@@ -46,6 +46,7 @@ class FilePathsObj:
     performance_progression_sliding_window_dir_path = None 
     arm_weights_dir_path = None 
     percent_selected_dir_path = None
+    final_stat_distribution_dir_path = None
     tournament_tables_dir_path = None
     learn_tables_dir_path = None
     param_comparison_figs_dir_path = None
@@ -54,6 +55,7 @@ class FilePathsObj:
     performance_progression_sliding_window_filepaths = {}
     arm_weights_filepaths = {} #cm or g
     percent_selected_filepaths = {} #cm or g
+    final_stat_distribution_filepaths = {}
     param_comparison_fig_filepaths = {} #each element is a dictionary
     tournament_table_filepaths = []
     learn_table_filepaths = []

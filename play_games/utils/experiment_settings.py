@@ -153,8 +153,5 @@ class ExperimentSettings:
             self.independent_variable = self.n_associations
         elif self.ensemble_parameters != None and len(self.ensemble_parameters) > 0 and type(self.ensemble_parameters) == list and len(self.ensemble_parameters) > 1:
             self.independent_variable = self.ensemble_parameters
-        
-
-
 
 

@@ -1,10 +1,16 @@
 import sys
+import os
+
+sys.path.insert(0, os.getcwd())
 
 from utils.object_manager import ObjectManager
 from run_tournament import RunTournament
 from run_learning_experiment import RunLearningExperiment
 from run_parameter_experiment import RunParameterExperiment
 from utils.file_alignment_checker import FileAlignmentChecker
+
+
+
 
 class FileRunner():
     def __init__(self):
@@ -36,8 +42,6 @@ if __name__=="__main__":
 
     #get arguments
     argv = sys.argv
-    print(argv)
-    # argv = ["not important", "DIST_ENS_WO", "0", "1"]
 
     file_runner = FileRunner()
     
@@ -48,7 +52,8 @@ if __name__=="__main__":
         if len(argv) > 3:
             file_runner.object_manager.experiment_settings.iteration_range = [int(argv[2]), int(argv[3])]
     else: 
-        file_runner.object_manager.experiment_settings.config_setting = "DIST_ENS_WO"
+        run_experiment = True
+        file_runner.object_manager.experiment_settings.config_setting = "DIST_ENS_W"
         file_runner.object_manager.experiment_settings.setup()
     #now we reset the filepaths
         
@@ -56,12 +61,14 @@ if __name__=="__main__":
 
     #at this point, we are good to go with our new settings
 
-    # if file_runner.object_manager.experiment_settings.experiment_type == file_runner.object_manager.experiment_types.PARAMETER_EXPERIMENT:
-    #     file_runner.run_parameter_experiment()
-    # elif file_runner.object_manager.experiment_settings.experiment_type == file_runner.object_manager.experiment_types.LEARNING_EXPERIMENT:
-    #     file_runner.run_learning_experiment()
-    # else:
-    #     file_runner.run_tournament()
+    if run_experiment:
+        if file_runner.object_manager.experiment_settings.experiment_type == file_runner.object_manager.experiment_types.PARAMETER_EXPERIMENT:
+            file_runner.run_parameter_experiment()
+        elif file_runner.object_manager.experiment_settings.experiment_type == file_runner.object_manager.experiment_types.LEARNING_EXPERIMENT:
+            file_runner.run_learning_experiment()
+        else:
+            file_runner.run_tournament()
 
     print("all files aligned:", file_runner.check_files())
+
     file_runner.run_analysis()

@@ -22,7 +22,7 @@ Here, I will walk through the sub-directories in the repository and briefly expl
 
 'data_objects' contains two sub-directories. 
 - The first is 'associator_objects'. This contains the pre-computed association lists for all the codenames board words. These are used by our Distance Associator bots. 
-- The secode is 'models'. This contains the model used to compute the CoLT score in our ACE framework. 
+- The second is 'models'. This contains the model used to compute the CoLT score in our ACE framework. The pipeline used to estimate CoLT from win rate and win time is also kept here. 
 
 'play_games' is where all the logic for the experiments and the bots is contained. 
 - 'file_runner.py' is the file used to kick off an experiment. You can either start an experiment from the command line or from the file itself. 
@@ -47,7 +47,7 @@ Here, I will walk through the sub-directories in the repository and briefly expl
 
 ## Running Experiments
 
-Experiments are configured in the 'config.ini' file found in 'play_games/utils'
+Experiments are configured in the 'config.ini' file found in 'play_games/utils'. The experiment settings we used for our experiments are under the keys, "DIST_ENS_W" and "DIST_ENS_WO". 
 
 ### Learning Experiments 
 
@@ -72,6 +72,8 @@ If you look in config.ini, you will see a key called DIST_ENS_WO and all of the 
 If you run the python file without any arguments it will use the config key specified in file_runner.py and use all the settings that are already in the config.ini file without overriding any of them. 
 
 ### Parameter Experiments 
+
+This was not used in our experiments, but is something that could be used to further optimize other parameters in the future. 
 
 The config settings work the same way as in the learning experiments. You can do the exact same command, but instead of giving a config key associated with a learning experiment, you give one associated with a parameter experiment. This runs 'x' number of games for every sequenctial value 'y' in iteration range for every independent variable specified under the config key in config.ini. 
 
@@ -102,6 +104,9 @@ Under the 'figures/learn_figs' sub-directory, you will find more sub-directories
 - The 'percent_selected_figs' show the percentage of the time that all of the arms are selected in an ACE bot averaged across all learning periods. 
 - The 'performance_progression_figs' contains sub-directories for each main statistic that shows how the running average averaged across all learning periods for each game changes for each main statistic across the 'n' games in each learning period. 
 - The 'performance_progression_sliding_window_figs' contains sub-directories for each main statistic that shows how the average from the current game until the last game changes across all games in a learning period. The numbers in the plot are attained by averaging across all learning periods for each corresponding game number. 
+- The "final_stat_distribution_figs" contains sub-directories for each main statistic that shows the distributions of the final averages for each statistic at the end of all the learning periods. 
+
+Under the 'tables/learn_tables' sub-directory, you will find files that contain the learn tables for your experiment. There is one table per experiment that conatins tables for each of the main stats. Each cell in each table has the average of the average learning period scores across all learning periods for the corresponding bot team and the respective statistic. 
 
 ### Parameter Experiments
 

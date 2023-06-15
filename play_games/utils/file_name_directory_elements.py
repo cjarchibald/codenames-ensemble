@@ -12,6 +12,7 @@ class FileNameDirectoryElements:
     PERFORMANCE_PROGRESSION_SLIDING_WINDOW_PREFIX = "performance_progression_sliding_window_"
     ARM_PERCENTAGE_PREFIX = "arm_percentage_"
     ARM_WEIGHTS_PREFIX = "arm_weights_"
+    FINAL_STAT_DIST_PREFIX = "final_stat_distribution_"
     LEARNING_FIGURE_FILE_TYPE = ".jpg"
     CM_STATS_FIGURE_PREFIX = "cm_stats_"
     CM_STATS_FIGURE_FILE_TYPE = ".jpg"
@@ -58,6 +59,7 @@ class FileNameDirectoryElements:
     TOURNAMENT_TABLES_DIR = "tournament_tables"
     LEARN_TABLES_DIR = "learn_tables"
     PARAM_COMPARISON_FIGS_DIR = "param_comparison_figs"
+    FINAL_STAT_DIST_DIR = "final_stat_distribution_figs"
 
 
     #parameter elements for file naming

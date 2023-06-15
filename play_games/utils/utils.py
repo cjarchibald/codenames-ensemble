@@ -1,3 +1,5 @@
+import numpy as np
+
 class Parameters:
     N_ASSOCIATIONS = "Number of Associations"
 
@@ -79,4 +81,10 @@ class BotConstructorTypes:
     ENSEMBLE_AI_GUESSER = 8
     RANDOM_ENSEMBLE_AI_CODEMASTER = 10
     RANDOM_ENSEMBLE_AI_GUESSER = 11 
+
+
+def quick_dist(vec1, vec2):
+    num = vec1.dot(vec2)
+    sign = -1 if num < 0 else 1
+    return 1- sign * num * num / (vec1.dot(vec1) * vec2.dot(vec2))
 
