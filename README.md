@@ -6,6 +6,8 @@ This is the code used in *Adapting to Teammates in a Cooperative Language Game* 
 
 This repository contains everything needed to replicate our experiments. All you need to do is clone the repo and set up the environment using the .yml file in the repo and you're done! 
 
+In addition, the 'CoLT' and 'BasicAgentComparison' folders contain details about how the ColT model from the paper was trained and explored, and details about the comparison of our modified basic agent strategy to that of previous work, respectively.  Please see the README in each folder for more details.
+
 ## Setting Up the Environment
 
 run the following command 
