@@ -1,0 +1,5 @@
+This folder contains a spreadsheet with all of the relevant comparison of our modified basic agent strategies to the original agent strategies from the Kim et al. paper.  Their results (win rates and win times) were derived from 30 games, while ours were derived from 85000 games, so the two numbers have different confidence intervals and differences observed in the spreadsheet aren't statistically significant.  But we include the comparison as a sanity check that our implementation is broadly consistent with what how previous AIs performed. 
+
+The CoLT ratings columns give the estimated CoLT ratings for each AI team, given that AI team's win rate and win time.  This estimate was produced by an estimator that was trained on the data for all of our basic AIs, and learned a mapping from win rate X win time to CoLT rating.  This allows us to estimate the CoLT rating for the AI teams from the Kim paper, even though we don't have the data necessary to compute their CoLT rating.  This section of the spreadsheet shows that our modified basic strategy does very well according to the CoLT rating, even though it does not explicitly maximize CoLT rating.  
+
+
