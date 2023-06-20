@@ -29,11 +29,14 @@ class RunTournament:
             self.lower = 0
             self.upper = 0
             
-        fi = (lp - self.lower)
+        if self.object_manager.experiment_settings.experiment_type == self.object_manager.experiment_types.PARAMETER_EXPERIMENT:
+            fi = p
+        else:
+            fi = (lp - self.lower)
 
         
         if self.object_manager.experiment_settings.experiment_type == self.object_manager.experiment_types.PARAMETER_EXPERIMENT:
-            path = self.object_manager.file_paths_obj.round_log_filepaths[p][fi]
+            path = self.object_manager.file_paths_obj.round_log_filepaths[fi]
         else:
             path = self.object_manager.file_paths_obj.round_log_filepaths[fi]
         

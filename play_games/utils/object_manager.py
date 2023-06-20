@@ -93,7 +93,7 @@ class ObjectManager:
         self.file_manager = FileManager(self.experiment_settings, self.ai_types, self.file_paths_obj, self.bot_ai_types, self.experiment_types, self.file_name_directory_elements, self.parameters, self.performance_progression_stat_keys, self.performance_progression_sliding_window_stat_keys, self.main_stat_keys)
         self.data_parser = DataParser(self.file_paths_obj, self.round_log_parser, self.learn_log_parser, self.bot_ai_types, self.ai_types, self.stat_dict_keys, self.types, save_json, load_json)
         self.data_processor = DataProcessor(self.stats, self.stat_dict_keys, self.file_paths_obj, self.experiment_settings, self.experiment_types, \
-                                            save_json, load_json, self.final_stat_dist_keys)
+                                            save_json, load_json, self.final_stat_dist_keys, self.main_stat_keys)
         self.table_creator = TableCreator(create_path, self.experiment_settings, self.bot_lm_types, self.main_stat_keys, extract_val, find_ensemble, find_rand_bot, \
                                           self.stat_dict_keys, check_if_ensemble, is_rand_ens)
         self.figure_creator = FigureCreator(self.stat_dict_keys, self.stats, check_if_ensemble, is_rand_ens, extract_val, find_rand_bot, create_path, self.file_paths_obj, find_ensemble, \
@@ -127,7 +127,4 @@ class ObjectManager:
     
     def get_new_bot_settings_obj(self):
         return copy.deepcopy(self.bot_settings_obj)
-
-
-    
     

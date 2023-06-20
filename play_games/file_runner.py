@@ -31,6 +31,7 @@ class FileRunner():
     
     def run_analysis(self):
         self.object_manager.results_analyzer.run_analysis()
+
     
     def check_files(self):
         file_alignment_checker = FileAlignmentChecker(self.object_manager)
@@ -52,8 +53,8 @@ if __name__=="__main__":
         if len(argv) > 3:
             file_runner.object_manager.experiment_settings.iteration_range = [int(argv[2]), int(argv[3])]
     else: 
-        run_experiment = True
-        file_runner.object_manager.experiment_settings.config_setting = "DIST_ENS_W"
+        run_experiment = False
+        file_runner.object_manager.experiment_settings.config_setting = "DIST_ASSOC"
         file_runner.object_manager.experiment_settings.setup()
     #now we reset the filepaths
         
@@ -69,6 +70,7 @@ if __name__=="__main__":
         else:
             file_runner.run_tournament()
 
+    # file_runner.clean_logs()
     print("all files aligned:", file_runner.check_files())
 
     file_runner.run_analysis()

@@ -54,6 +54,19 @@ class FileManager:
     #element. 
     def combine_components(self, root_name, cm_ai_types, g_ai_types):
 
+        if self.experiment_settings.experiment_type == self.experiment_types.LEARNING_EXPERIMENT:
+
+            self.combine_learn_experiment_comps(root_name, cm_ai_types, g_ai_types)
+
+
+        elif self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
+
+            self.combine_param_experiment_comps(root_name)
+
+        else:
+            self.set_common_files(root_name, "")
+    
+    def combine_learn_experiment_comps(self, root_name, cm_ai_types, g_ai_types):
         contains_ensemble_cm = False
         contains_ensemble_g = False
 
@@ -66,97 +79,93 @@ class FileManager:
         name_elements = self.file_name_directory_elements
         name = root_name
 
+        lower = self.experiment_settings.iteration_range[0]
+        upper = self.experiment_settings.iteration_range[1]
 
-        if self.experiment_settings.experiment_type == self.experiment_types.LEARNING_EXPERIMENT:
+        #We take care of naming the files that summarize the individual ones
+        itr_range = f"{lower}-{upper}"
+
+        #learning experiment
+        if contains_ensemble_cm:
+            #learn experiment file names
+            #directory information has already been appended here
+            dir = self.file_paths_obj.learn_experiment_analyses_dir_path
+            this_name = name_elements.LEARN_EXPERIMENT_ANALYSIS_PREFIX + name_elements.CODEMASTER_PREFIX + name + itr_range + \
+                name_elements.LEARN_EXPERIMENT_ANALYSIS_FILE_TYPE
+            self.file_paths_obj.learn_experiment_analysis_filepath_cm = os.path.join(dir, this_name)
             
-            lower = self.experiment_settings.iteration_range[0]
-            upper = self.experiment_settings.iteration_range[1]
+        if contains_ensemble_g:
+            dir = self.file_paths_obj.learn_experiment_analyses_dir_path
+            this_name = name_elements.LEARN_EXPERIMENT_ANALYSIS_PREFIX + name_elements.GUESSER_PREFIX + name + itr_range + \
+                name_elements.LEARN_EXPERIMENT_ANALYSIS_FILE_TYPE
+            self.file_paths_obj.learn_experiment_analysis_filepath_g = os.path.join(dir, this_name)
 
-            #We take care of naming the files that summarize the individual ones
-            itr_range = f"{lower}-{upper}"
+        #name experiment specific supporting files here
+        #Don't worry about naming figure files yet becuase those are just intermediary
+        #add names to an array so that we can do the naming of the files that all experiment types have together
+        for i in range(lower, upper):
+            #We take care of naming the individual iteration files
 
-            #learning experiment
+            #learn period analysis files
             if contains_ensemble_cm:
-                #learn experiment file names
-                #directory information has already been appended here
-                dir = self.file_paths_obj.learn_experiment_analyses_dir_path
-                this_name = name_elements.LEARN_EXPERIMENT_ANALYSIS_PREFIX + name_elements.CODEMASTER_PREFIX + name + itr_range + \
-                    name_elements.LEARN_EXPERIMENT_ANALYSIS_FILE_TYPE
-                self.file_paths_obj.learn_experiment_analysis_filepath_cm = os.path.join(dir, this_name)
-                
+                dir = self.file_paths_obj.learn_period_analyses_dir_path
+                this_name = name_elements.LEARN_PERIOD_ANALYSIS_PREFIX + name_elements.CODEMASTER_PREFIX + name + \
+                    "_" + str(i) + name_elements.LEARN_PERIOD_ANALYSIS_FILE_TYPE 
+                self.file_paths_obj.learn_period_analysis_filepaths_cm.append(os.path.join(dir, this_name))
+
+                #learn logs
+                dir = self.file_paths_obj.learn_logs_dir_path
+                this_name = name_elements.LEARN_LOG_PREFIX + name_elements.CODEMASTER_PREFIX + name + "_" + str(i) + name_elements.LEARN_LOG_FILE_TYPE
+                self.file_paths_obj.learn_log_filepaths_cm.append(os.path.join(dir, this_name))
+
+                #learn tables
+                dir = self.file_paths_obj.learn_tables_dir_path
+                this_name = name_elements.LEARN_TABLE_PREFIX + name_elements.CODEMASTER_PREFIX + name + "_" + str(i) + name_elements.LEARN_TABLE_FILE_TYPE
+                self.file_paths_obj.learn_table_filepaths.append(os.path.join(dir, this_name))
+
+                #learn figures
+                self.create_learn_fig_paths(name, name_elements.CODEMASTER_PREFIX, i)
+
             if contains_ensemble_g:
-                dir = self.file_paths_obj.learn_experiment_analyses_dir_path
-                this_name = name_elements.LEARN_EXPERIMENT_ANALYSIS_PREFIX + name_elements.GUESSER_PREFIX + name + itr_range + \
-                    name_elements.LEARN_EXPERIMENT_ANALYSIS_FILE_TYPE
-                self.file_paths_obj.learn_experiment_analysis_filepath_g = os.path.join(dir, this_name)
+                dir = self.file_paths_obj.learn_period_analyses_dir_path
+                this_name = name_elements.LEARN_PERIOD_ANALYSIS_PREFIX + name_elements.GUESSER_PREFIX + name + \
+                    "_" + str(i) + name_elements.LEARN_PERIOD_ANALYSIS_FILE_TYPE
+                self.file_paths_obj.learn_period_analysis_filepaths_g.append(os.path.join(dir, this_name))
 
-            #name experiment specific supporting files here
-            #Don't worry about naming figure files yet becuase those are just intermediary
-            #add names to an array so that we can do the naming of the files that all experiment types have together
-            for i in range(lower, upper):
-                #We take care of naming the individual iteration files
+                #learn logs
+                dir = self.file_paths_obj.learn_logs_dir_path
+                this_name = name_elements.LEARN_LOG_PREFIX + name_elements.GUESSER_PREFIX + name + "_" + str(i) + name_elements.LEARN_LOG_FILE_TYPE
+                self.file_paths_obj.learn_log_filepaths_g.append(os.path.join(dir, this_name))
 
-                #learn period analysis files
-                if contains_ensemble_cm:
-                    dir = self.file_paths_obj.learn_period_analyses_dir_path
-                    this_name = name_elements.LEARN_PERIOD_ANALYSIS_PREFIX + name_elements.CODEMASTER_PREFIX + name + \
-                       "_" + str(i) + name_elements.LEARN_PERIOD_ANALYSIS_FILE_TYPE 
-                    self.file_paths_obj.learn_period_analysis_filepaths_cm.append(os.path.join(dir, this_name))
+                #learn tables
+                dir = self.file_paths_obj.learn_tables_dir_path
+                this_name = name_elements.LEARN_TABLE_PREFIX + name_elements.GUESSER_PREFIX + name + "_" + str(i) + name_elements.LEARN_TABLE_FILE_TYPE
+                self.file_paths_obj.learn_table_filepaths.append(os.path.join(dir, this_name))
 
-                    #learn logs
-                    dir = self.file_paths_obj.learn_logs_dir_path
-                    this_name = name_elements.LEARN_LOG_PREFIX + name_elements.CODEMASTER_PREFIX + name + "_" + str(i) + name_elements.LEARN_LOG_FILE_TYPE
-                    self.file_paths_obj.learn_log_filepaths_cm.append(os.path.join(dir, this_name))
+                #learn figures
+                self.create_learn_fig_paths(name, name_elements.GUESSER_PREFIX, i)
+                    
+            self.set_common_files(name, i)
+        
+        #We add one more processed data file and learn table file because we will be combining all of the components 
+        #We do this only for learning experiments because it is the only type of experiment that needs 
+        #averages across many tournaments
+        dir = self.file_paths_obj.processed_data_dir_path
+        this_name = name_elements.PROCESSED_DATA_PREFIX + name + "_final" + name_elements.PROCESSED_DATA_FILE_TYPE
+        self.file_paths_obj.processed_data_filepaths.append(os.path.join(dir, this_name))
 
-                    #learn tables
-                    dir = self.file_paths_obj.learn_tables_dir_path
-                    this_name = name_elements.LEARN_TABLE_PREFIX + name_elements.CODEMASTER_PREFIX + name + "_" + str(i) + name_elements.LEARN_TABLE_FILE_TYPE
-                    self.file_paths_obj.learn_table_filepaths.append(os.path.join(dir, this_name))
-
-                    #learn figures
-                    self.create_learn_fig_paths(name, name_elements.CODEMASTER_PREFIX, i)
-
-                if contains_ensemble_g:
-                    dir = self.file_paths_obj.learn_period_analyses_dir_path
-                    this_name = name_elements.LEARN_PERIOD_ANALYSIS_PREFIX + name_elements.GUESSER_PREFIX + name + \
-                        "_" + str(i) + name_elements.LEARN_PERIOD_ANALYSIS_FILE_TYPE
-                    self.file_paths_obj.learn_period_analysis_filepaths_g.append(os.path.join(dir, this_name))
-
-                    #learn logs
-                    dir = self.file_paths_obj.learn_logs_dir_path
-                    this_name = name_elements.LEARN_LOG_PREFIX + name_elements.GUESSER_PREFIX + name + "_" + str(i) + name_elements.LEARN_LOG_FILE_TYPE
-                    self.file_paths_obj.learn_log_filepaths_g.append(os.path.join(dir, this_name))
-
-                    #learn tables
-                    dir = self.file_paths_obj.learn_tables_dir_path
-                    this_name = name_elements.LEARN_TABLE_PREFIX + name_elements.GUESSER_PREFIX + name + "_" + str(i) + name_elements.LEARN_TABLE_FILE_TYPE
-                    self.file_paths_obj.learn_table_filepaths.append(os.path.join(dir, this_name))
-
-                    #learn figures
-                    self.create_learn_fig_paths(name, name_elements.GUESSER_PREFIX, i)
-                        
-                self.set_common_files(name, i)
-            
-            #We add one more processed data file and learn table file because we will be combining all of the components 
-            #We do this only for learning experiments because it is the only type of experiment that needs 
-            #averages across many tournaments
-            dir = self.file_paths_obj.processed_data_dir_path
-            this_name = name_elements.PROCESSED_DATA_PREFIX + name + "_final" + name_elements.PROCESSED_DATA_FILE_TYPE
-            self.file_paths_obj.processed_data_filepaths.append(os.path.join(dir, this_name))
-
-            dir = self.file_paths_obj.learn_tables_dir_path
-            this_name = name_elements.LEARN_TABLE_PREFIX + name + "_final" + name_elements.LEARN_TABLE_FILE_TYPE
-            self.file_paths_obj.learn_table_filepaths.append(os.path.join(dir, this_name))
+        dir = self.file_paths_obj.learn_tables_dir_path
+        this_name = name_elements.LEARN_TABLE_PREFIX + name + "_final" + name_elements.LEARN_TABLE_FILE_TYPE
+        self.file_paths_obj.learn_table_filepaths.append(os.path.join(dir, this_name))
 
 
-            #Create learning figures for the final (averaged) data
-            if contains_ensemble_cm:
-                self.create_learn_fig_paths(name, name_elements.CODEMASTER_PREFIX, "_final")
-            if contains_ensemble_g:
-                self.create_learn_fig_paths(name, name_elements.GUESSER_PREFIX, "_final")
+        #Create learning figures for the final (averaged) data
+        if contains_ensemble_cm:
+            self.create_learn_fig_paths(name, name_elements.CODEMASTER_PREFIX, "_final")
+        if contains_ensemble_g:
+            self.create_learn_fig_paths(name, name_elements.GUESSER_PREFIX, "_final")
 
-        elif self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
-
+    def combine_param_experiment_comps(self, root_name):
             #The parameter that is being changed will be specified in the experiment name
             parameters = self.experiment_settings.independent_variable
 
@@ -164,50 +173,39 @@ class FileManager:
             upper = parameters[-1]
             param_range = f"{lower}-{upper}"
 
-            lower = self.experiment_settings.iteration_range[0]
-            upper = self.experiment_settings.iteration_range[1]
-            itr_range = f"{lower}-{upper}"
+            name_elements = self.file_name_directory_elements
 
-            #set the experiment files here
+            #For every pair (and average of all pairs) and every stat, we want a different figure
+            for stat in self.main_stat_keys:
+                for cm in self.experiment_settings.codemasters:
+                    for g in self.experiment_settings.guessers:
 
-            #param experiment analysis
-            dir = self.file_paths_obj.param_experiment_analysis_filepath
-            this_name = name_elements.PARAM_EXPERIMENT_ANALYSIS_PREFIX + name + "_" + param_range + name_elements.PARAM_EXPERIMENT_ANALYSIS_FILE_TYPE
-            self.file_paths_obj.param_experiment_analysis_filepath = os.path.join(dir, this_name)
+                        if cm not in self.file_paths_obj.param_comparison_fig_filepaths:
+                            self.file_paths_obj.param_comparison_fig_filepaths[cm] = {}
+                        if g not in self.file_paths_obj.param_comparison_fig_filepaths[cm]:
+                            self.file_paths_obj.param_comparison_fig_filepaths[cm][g] = {}
 
-            #Set all the other files
-            p_counter = 0
-            for parameter in parameters:
-                for i in range(lower, upper):
-                    if contains_ensemble_cm:
-                        self.create_param_fig_paths(name, name_elements.CODEMASTER_PREFIX, parameter, i, p_counter)
-                    if contains_ensemble_g:
-                        self.create_param_fig_paths(name, name_elements.GUESSER_PREFIX, parameter, i, p_counter)
-                    
-                    self.set_common_files_param(name + str(parameter) + name_elements.LEARN_PERIOD_ITERATIONS_PREFIX, i, p_counter)
+
+                        fname = name_elements.PARAMETER_COMPARISON_FIGURE_PREFIX + stat + "_" + cm + "-" + g + "_" + \
+                              root_name + param_range + name_elements.PARAMETER_COMPARISON_FIGURE_FILE_TYPE
+                        dir = self.file_paths_obj.param_comparison_figs_dir_path
+
+                        self.file_paths_obj.param_comparison_fig_filepaths[cm][g][stat] = os.path.join(dir, stat, fname)
+                        
+                #add the average for all as well
+                fname = name_elements.PARAMETER_COMPARISON_FIGURE_PREFIX + stat + "_avg_perf_" + \
+                        root_name + param_range + name_elements.PARAMETER_COMPARISON_FIGURE_FILE_TYPE
+                dir = self.file_paths_obj.param_comparison_figs_dir_path
+
+                if "avg" not in self.file_paths_obj.param_comparison_fig_filepaths:
+                    self.file_paths_obj.param_comparison_fig_filepaths['avg'] = {}
+                self.file_paths_obj.param_comparison_fig_filepaths["avg"][stat] = os.path.join(dir, stat, fname)
             
-                        #Create learning figures for the final (averaged) data
-                if contains_ensemble_cm:
-                    self.create_param_fig_paths(name, name_elements.CODEMASTER_PREFIX, parameter, "_final", p_counter)
-                if contains_ensemble_g:
-                    self.create_param_fig_paths(name, name_elements.GUESSER_PREFIX, parameter, "_final", p_counter)
-                
-                #TODO: ADD FINAL TO PROCESSED DATA!
-                dir = os.path.join(self.file_paths_obj.processed_data_dir_path, str(p_counter))
-                this_name = name_elements.PROCESSED_DATA_PREFIX + name + param_range + name_elements.PROCESSED_DATA_FILE_TYPE
-                self.file_paths_obj.processed_data_filepaths[p_counter].append(os.path.join(dir, this_name))
+            for p in parameters:
+                self.set_common_files(root_name, str(p))
 
-                p_counter += 1
-            
-            #TODO: Add a final lp parameter directory with all of the stats files
-            if contains_ensemble_cm:
-                self.create_param_fig_paths(name, name_elements.CODEMASTER_PREFIX, param_range, "_final", "final")
-            if contains_ensemble_g:
-                self.create_param_fig_paths(name, name_elements.GUESSER_PREFIX, param_range, "_final", "final")
-            
 
-        else:
-            self.set_common_files(name, "")
+
     
     def create_learn_fig_paths(self, name, type_prefix, itr_suffix):
         name_elements = self.file_name_directory_elements
@@ -251,66 +249,31 @@ class FileManager:
             this_name = name_elements.PERFORMANCE_PROGRESSION_SLIDING_WINDOW_PREFIX + b_type + "_" + stat + "_" + name + str(itr_suffix)
             self.file_paths_obj.performance_progression_sliding_window_filepaths[b_type][stat].append(os.path.join(dir, this_name))
 
-    
-    def create_param_fig_paths(self, name, type_prefix, param_suffix, i, param_ind):
-        name_elements = self.file_name_directory_elements
-        b_type = type_prefix[:-1]
-
-        if b_type not in self.file_paths_obj.param_comparison_fig_filepaths:
-            self.file_paths_obj.param_comparison_fig_filepaths[b_type] = {}
-        if param_ind not in self.file_paths_obj.param_comparison_fig_filepaths[b_type]:
-            self.file_paths_obj.param_comparison_fig_filepaths[b_type][param_ind] = {}
-
-        #performance progression figures (loop through all of the wanted stats for this)
-        for stat in self.main_stat_keys:
-            if stat not in self.file_paths_obj.param_comparison_fig_filepaths[b_type][param_ind]:
-                self.file_paths_obj.param_comparison_fig_filepaths[b_type][param_ind][stat] = []
-            dir = os.path.join(self.file_paths_obj.param_comparison_figs_dir_path, stat)
-            this_name = name_elements.PARAMETER_COMPARISON_FIGURE_PREFIX + b_type + "_" + stat + "_" + name + str(param_suffix) + name_elements.LEARN_PERIOD_ITERATIONS_PREFIX + str(i) + name_elements.PARAMETER_COMPARISON_FIGURE_FILE_TYPE
-            self.file_paths_obj.param_comparison_fig_filepaths[b_type][param_ind][stat].append(os.path.join(dir, this_name))
 
 
     def set_common_files_param(self, name, val, d):
 
         name_elements = self.file_name_directory_elements
 
-        if type(self.file_paths_obj.round_log_filepaths) == list:
-            self.file_paths_obj.round_log_filepaths = {}
-        if type(self.file_paths_obj.parsed_data_filepaths) == list:
-            self.file_paths_obj.parsed_data_filepaths = {}
-        if type(self.file_paths_obj.processed_data_filepaths) == list:
-            self.file_paths_obj.processed_data_filepaths = {}
-        if type(self.file_paths_obj.tournament_table_filepaths) == list:
-            self.file_paths_obj.tournament_table_filepaths = {}
-        
-        if d not in self.file_paths_obj.round_log_filepaths:
-            self.file_paths_obj.round_log_filepaths[d] = []
-        if d not in self.file_paths_obj.parsed_data_filepaths:
-            self.file_paths_obj.parsed_data_filepaths[d] = []
-        if d not in self.file_paths_obj.processed_data_filepaths:
-            self.file_paths_obj.processed_data_filepaths[d] = []
-        if d not in self.file_paths_obj.tournament_table_filepaths:
-            self.file_paths_obj.tournament_table_filepaths[d] = []
-
         #round logs
-        dir = os.path.join(self.file_paths_obj.round_logs_dir_path, str(d))
+        dir = self.file_paths_obj.round_logs_dir_path
         this_name = name_elements.ROUND_LOG_PREFIX + name + "_" + str(val) + name_elements.ROUND_LOG_FILE_TYPE
-        self.file_paths_obj.round_log_filepaths[d].append(os.path.join(dir, this_name))
+        self.file_paths_obj.round_log_filepaths.append(os.path.join(dir, this_name))
 
         #parsed data
-        dir = os.path.join(self.file_paths_obj.parsed_data_dir_path, str(d))
+        dir = self.file_paths_obj.parsed_data_dir_path
         this_name = name_elements.PARSED_DATA_PREFIX + name + "_" + str(val) + name_elements.PARSED_DATA_FILE_TYPE
-        self.file_paths_obj.parsed_data_filepaths[d].append(os.path.join(dir, this_name))
+        self.file_paths_obj.parsed_data_filepaths.append(os.path.join(dir, this_name))
 
         #processed data
-        dir = os.path.join(self.file_paths_obj.processed_data_dir_path, str(d))
+        dir = self.file_paths_obj.processed_data_dir_path
         this_name = name_elements.PROCESSED_DATA_PREFIX + name + "_" + str(val) + name_elements.PROCESSED_DATA_FILE_TYPE
-        self.file_paths_obj.processed_data_filepaths[d].append(os.path.join(dir, this_name))
+        self.file_paths_obj.processed_data_filepaths.append(os.path.join(dir, this_name))
 
         #tournament table name
-        dir = os.path.join(self.file_paths_obj.tournament_tables_dir_path, str(d))
+        dir = self.file_paths_obj.tournament_tables_dir_path
         this_name = name_elements.TOURNAMENT_TABLE_PREFIX + name + "_" + str(val) + name_elements.TOURNAMENT_TABLE_FILE_TYPE
-        self.file_paths_obj.tournament_table_filepaths[d].append(os.path.join(dir, this_name))
+        self.file_paths_obj.tournament_table_filepaths.append(os.path.join(dir, this_name))
 
         
 

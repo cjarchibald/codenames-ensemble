@@ -344,48 +344,29 @@ class FigureCreator:
     def create_param_vs_score_figures(self, processed_data):
         #each key in processed data prepresents a different parameter (e.g. 0 = 0, 1 = .001, etc.)
         parameters = self.experiment_settings.independent_variable 
-        stats_vals = {}
 
-        #loop through all of the parameter indices 
-        for i in range(len(processed_data)):
-            final_for_param = processed_data[i]["Final"]
-            for stat in self.main_stats_keys:
-                #if the cm is ensemble, then compute it's average performance against all of the other guessers 
-                #save the figure for cm and this stat in the correct place 
-                ens_cm = self.find_ensemble(final_for_param.keys())
-                if ens_cm != None: #then there is an ensemble codemaster 
-                    if "cm" not in stats_vals:
-                        stats_vals["cm"] = {}
-                    if stat not in stats_vals["cm"]:
-                        stats_vals["cm"][stat] = []
-
-                    values = []
-                    for g in final_for_param[ens_cm]:
-                        values.append(final_for_param[ens_cm][g][stat])
-                    stats_vals["cm"][stat].append(np.mean(values))
-            
-                #if the g is ensemble, then compute it's average performance against all of the other codemasters
-                ens_g = self.find_ensemble(final_for_param[list(final_for_param.keys())[0]].keys())
-                if ens_g != None: #then there is an ensemble codemaster 
-                    if "g" not in stats_vals:
-                        stats_vals["g"] = {}
-                    if stat not in stats_vals["g"]:
-                        stats_vals["g"][stat] = []
-
-                    values = []
-                    for cm in final_for_param:
-                        values.append(final_for_param[cm][ens_g][stat])
-                    stats_vals["g"][stat].append(np.mean(values))
+        def create_fig(data, save_path):
+            x = parameters
+            y = data 
+            plt.plot(x, y)
+            self.create_path(save_path)
+            plt.savefig(save_path)
+            plt.clf()
         
-        for b_type in stats_vals:
-            for stat in stats_vals[b_type]:
-                fp = self.file_paths_obj.param_comparison_fig_filepaths[b_type]['final'][stat][0]
-                self.create_path(fp)
-
-                y = stats_vals[b_type][stat]
-                plt.plot(parameters, y)
-                plt.savefig(fp)
-                plt.clf()
+        cms = [e for e in list(processed_data.keys()) if e != "avg"]
+        gs = list(processed_data[cms[0]].keys())
+        for cm in cms:
+            for g in gs:
+                for stat in processed_data[cm][g]:
+                    save_path = self.file_paths_obj.param_comparison_fig_filepaths[cm][g][stat]
+                    data = processed_data[cm][g][stat]
+                    create_fig(data, save_path)
+        
+        for stat in processed_data['avg']:
+            save_path = self.file_paths_obj.param_comparison_fig_filepaths['avg'][stat]
+            data = processed_data['avg'][stat]
+            create_fig(data, save_path)
+        
 
 
     

@@ -56,7 +56,7 @@ class DataVisualizer:
             self.data_compiler.compile_data(compiled_info)
 
         elif self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
-            self.create_param_vs_score_figures(processed_data)
+            self.figure_creator.create_param_vs_score_figures(processed_data[self.stat_dict_keys.FINAL_KEY])
     
 
     def get_solo_bot_data(self):
@@ -248,4 +248,7 @@ class DataVisualizer:
                 vals.sort(key=lambda x: x[1])
             else:
                 vals.sort(key=lambda x: x[1], reverse=True) 
+    
+
+
     

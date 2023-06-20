@@ -3,7 +3,7 @@ import joblib
 import scipy.stats as stats
 
 class DataProcessor:
-    def __init__(self, stats, stat_dict_keys, file_paths_obj, experiment_settings, experiment_types, save_json, load_json, final_stat_dist_keys):
+    def __init__(self, stats, stat_dict_keys, file_paths_obj, experiment_settings, experiment_types, save_json, load_json, final_stat_dist_keys, main_stats_keys):
         self.stat_dict_keys = stat_dict_keys
         self.stats = stats
         self.file_paths_obj = file_paths_obj
@@ -13,6 +13,7 @@ class DataProcessor:
         self.load_json = load_json
         self.confidence_level = .95
         self.final_stat_dist_keys = final_stat_dist_keys
+        self.main_stats_keys = main_stats_keys
 
     def process_data(self, parsed_data, processed_data_filepaths):
             processed_data = {}
@@ -85,17 +86,18 @@ class DataProcessor:
                         self.get_sliding_window_averages(processed_data, parsed_data, lp, cm, g)
 
             #If it is a learning experiment, we want to take averages across lps for stats and we store them in another file
-            if self.experiment_settings.experiment_type == self.experiment_types.LEARNING_EXPERIMENT or self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
-                processed_data[self.stat_dict_keys.FINAL_KEY] = self.get_averages(processed_data)
-                self.add_final_distributions(processed_data)
+            # if self.experiment_settings.experiment_type == self.experiment_types.LEARNING_EXPERIMENT or self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
+            if self.experiment_settings.experiment_type == self.experiment_types.LEARNING_EXPERIMENT or \
+                self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
+
+                if self.experiment_settings.experiment_type == self.experiment_types.LEARNING_EXPERIMENT:
+                    processed_data[self.stat_dict_keys.FINAL_KEY] = self.get_averages(processed_data)
+                    self.add_final_distributions(processed_data)
+                else:
+                    processed_data[self.stat_dict_keys.FINAL_KEY] = self.process_final_param_stats(processed_data)
 
                 #Save the final data structure
-
                 self.save_json(processed_data[self.stat_dict_keys.FINAL_KEY], processed_data_filepaths[-1])
-                
-                end = -1
-            else:
-                end = len(processed_data_filepaths)
 
             #save the data for individual files
             for counter in parsed_data.keys():
@@ -103,6 +105,42 @@ class DataProcessor:
                 self.save_json(processed_data[counter], filepath)
 
             return processed_data
+
+    def process_final_param_stats(self, processed_data):
+        #compile arrays for every cm, g pair and their stat 
+        parameter_inds = list(processed_data.keys())
+        cms = list(processed_data[parameter_inds[0]].keys())
+        gs = list(processed_data[parameter_inds[0]][cms[0]])
+        new = {}
+        avg_key = "avg"
+        
+        for stat in self.main_stats_keys:
+            all_vals = []
+            for cm in cms:
+                for g in gs:
+                    pair_vals = []
+                    for p in parameter_inds:
+                        v = processed_data[p][cm][g][stat]
+                        pair_vals.append(v)
+                    all_vals.append(pair_vals)
+                    if cm not in new:
+                        new[cm] = {}
+                    if g not in new[cm]:
+                        new[cm][g] = {}
+                    new[cm][g][stat] = pair_vals
+            #now we get the average for each column
+            all_vals = np.array(all_vals)
+            means = []
+            for i in range(len(all_vals[0])):
+                means.append(np.mean(all_vals[:, i]))
+            
+            if avg_key not in new:
+                new[avg_key] = {}
+            new[avg_key][stat] = means
+        
+        return new
+
+                    
 
     def add_final_distributions(self, processed_data):
         keys = list(processed_data.keys())

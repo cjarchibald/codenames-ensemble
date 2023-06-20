@@ -48,29 +48,25 @@ class ResultsAnalyzer:
             self.data_visualizer.visualize_data(processed_data)
 
         elif self.experiment_settings.experiment_type == self.experiment_types.PARAMETER_EXPERIMENT:
+
+            round_logs = self.file_paths_obj.round_log_filepaths
+
+            parsed_data_filepaths = self.file_paths_obj.parsed_data_filepaths
             
-            final_processed_data = {}
-            for i in range(len(self.experiment_settings.independent_variable)):
+            processed_data_filepaths = self.file_paths_obj.processed_data_filepaths
 
-                round_logs = self.file_paths_obj.round_log_filepaths[i]
+            if not self.use_preloaded_parsed:
+                parsed_data = self.data_parser.parse_data(round_logs, [], [], parsed_data_filepaths)
+            else:
+                parsed_data = self.data_parser.load_parsed_data()
+            if not self.use_preloaded_processed:
+                processed_data = self.data_processer.process_data(parsed_data, processed_data_filepaths)
+            else:
+                processed_data = self.data_processer.load_processed_data()
 
-                parsed_data_filepaths = self.file_paths_obj.parsed_data_filepaths[i]
-                
-                processed_data_filepaths = self.file_paths_obj.processed_data_filepaths[i]
-
-                if not self.use_preloaded_parsed:
-                    parsed_data = self.data_parser.parse_data(round_logs, [], [], parsed_data_filepaths)
-                else:
-                    parsed_data = self.data_parser.load_parsed_data(None, None, None, parsed_data_filepaths)
-                if not self.use_preloaded_processed:
-                    processed_data = self.data_processer.process_data(parsed_data, processed_data_filepaths)
-                else:
-                    processed_data = self.data_processer.load_processed_data(None, processed_data_filepaths)
-
-                final_processed_data[i] = processed_data
 
             if not self.use_preloaded_visualized:
-                self.data_visualizer.visualize_data(final_processed_data)
+                self.data_visualizer.visualize_data(processed_data)
 
         else: #this is a tournament
             round_logs = self.file_paths_obj.round_log_filepaths
@@ -88,3 +84,6 @@ class ResultsAnalyzer:
 
             if not self.use_preloaded_visualized:
                 self.data_visualizer.visualize_data(processed_data)
+
+    
+
