@@ -112,7 +112,7 @@ Under the 'tables/learn_tables' sub-directory, you will find files that contain 
 
 Because this wasn't the main focus of our research, we don't have nearly as many visualizations. 
 
-Under the sub-directory 'stats/saved_results/parameter_experiments/visualizations/figures/param_comparison_figs' you can find figures that compare the average score for each stat accross all games played 
+Under the sub-directory 'stats/saved_results/parameter_experiments/visualizations/figures/param_comparison_figs' you can find figures that compare the scores that resulted from each parameter value for all bot pairs. There is also a figure that averages all bot pair scores at each parameter value. 
 
 ## Main Statistics 
 
