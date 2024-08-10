@@ -1,6 +1,6 @@
 # Codenames Ensemble
 
-This is the code used in *Adapting to Teammates in a Cooperative Language Game* by Christopher Archibald and Spencer Brosnahan
+This is the code used in *Adapting to Teammates in a Cooperative Language Game* by Christopher Archibald, Spencer Brosnahan, and Diego Blaylock.
 
 ## Overview 
 
