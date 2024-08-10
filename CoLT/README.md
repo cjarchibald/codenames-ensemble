@@ -2,4 +2,4 @@ This folder contains details related to the training and analysis of the CoLT ra
 
 
 
-To generate Figure 3 from the paper, use CoLTAnalysisFigure3.py script. 
+To generate a training loss figure for the CoLT training, use CoLTAnalysisFigure3.py script. 
